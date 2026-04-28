@@ -11,10 +11,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.DecorativeObject;
 import net.runelite.api.ObjectComposition;
+import net.runelite.api.ObjectID;
 import net.runelite.api.GameObject;
 import net.runelite.api.GroundObject;
 import net.runelite.api.MenuAction;
@@ -268,6 +270,18 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 
 	private void addToHiddenList(int objectId)
 	{
+		final int TOB_BLOAT_ROOM_PILLAR = 32955;
+		final int TOB_BLOAT_CHAMBER = 32957;
+		//Disallow hiding of bloat room pillar
+		if (objectId == TOB_BLOAT_ROOM_PILLAR || objectId == TOB_BLOAT_CHAMBER) {
+			client.addChatMessage(
+				ChatMessageType.GAMEMESSAGE,
+				"",
+				"Hiding this object is disallowed due to plugin hub rules.",
+				null
+			);
+			return;
+		}
 		hiddenObjectIds.add(objectId);
 		saveHiddenObjectIds();
 		clientThread.invokeLater(() -> invalidateZonesForId(objectId));
