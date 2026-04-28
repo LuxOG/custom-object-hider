@@ -442,4 +442,16 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 			clientThread.invokeLater(this::invalidateHiddenObjectZones);
 		}
 	}
+
+	@Override
+	public void resetConfiguration()
+	{
+		Set<Integer> toRestore = new HashSet<>(hiddenObjectIds);
+		configManager.unsetConfiguration(ObjectHiderConfig.GROUP, "hiddenObjectIds");
+		hiddenObjectIds.clear();
+		if (!toRestore.isEmpty())
+		{
+			clientThread.invokeLater(() -> invalidateZonesForIds(toRestore));
+		}
+	}
 }
