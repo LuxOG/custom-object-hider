@@ -52,7 +52,11 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 
 	private static final List<Integer> BANNED_OBJECTS = List.of(
 		ObjectID.TOB_BLOAT_PILLAR,
-		ObjectID.TOB_BLOAT_CHAMBER
+		ObjectID.TOB_BLOAT_CHAMBER,
+		ObjectID.TOB_SOTETSEG_PLAINTILE,
+		ObjectID.TOB_SOTETSEG_DARKTILE,
+		ObjectID.TOB_SOTETSEG_LIGHTTILE,
+		ObjectID.TOB_SOTETSEG_TRIGGEREDTILE
 	);
 
 	/**
