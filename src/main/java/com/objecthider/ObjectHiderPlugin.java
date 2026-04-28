@@ -16,7 +16,6 @@ import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.DecorativeObject;
 import net.runelite.api.ObjectComposition;
-import net.runelite.api.ObjectID;
 import net.runelite.api.GameObject;
 import net.runelite.api.GroundObject;
 import net.runelite.api.MenuAction;
@@ -29,6 +28,7 @@ import net.runelite.api.WorldView;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.gameval.ObjectID;
 import net.runelite.api.hooks.DrawCallbacks;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.callback.RenderCallback;
@@ -49,8 +49,11 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 {
 	private static final String HIDE_OPTION = "Hide Object";
 	private static final String UNHIDE_OPTION = "Unhide Object";
-	private static final int TOB_BLOAT_ROOM_PILLAR = 32955;
-	private static final int TOB_BLOAT_CHAMBER = 32957;
+
+	private static final List<Integer> BANNED_OBJECTS = List.of(
+		ObjectID.TOB_BLOAT_PILLAR,
+		ObjectID.TOB_BLOAT_CHAMBER
+	);
 
 	/**
 	 * Zone array index offset: (EXTENDED_SCENE_SIZE - SCENE_SIZE) / 2 / 8
@@ -273,7 +276,8 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 	private void addToHiddenList(int objectId)
 	{
 		//Disallow hiding of bloat room pillar
-		if (objectId == TOB_BLOAT_ROOM_PILLAR || objectId == TOB_BLOAT_CHAMBER) {
+		if (BANNED_OBJECTS.contains(objectId))
+		{
 			client.addChatMessage(
 				ChatMessageType.GAMEMESSAGE,
 				"",
@@ -429,7 +433,11 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 			.forEach(s -> {
 				try
 				{
-					hiddenObjectIds.add(Integer.parseInt(s));
+					int id = Integer.parseInt(s);
+					if (!BANNED_OBJECTS.contains(id))
+					{
+						hiddenObjectIds.add(id);
+					}
 				}
 				catch (NumberFormatException e)
 				{
