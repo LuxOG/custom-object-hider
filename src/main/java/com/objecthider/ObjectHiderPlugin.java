@@ -49,6 +49,8 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 {
 	private static final String HIDE_OPTION = "Hide Object";
 	private static final String UNHIDE_OPTION = "Unhide Object";
+	private static final int TOB_BLOAT_ROOM_PILLAR = 32955;
+	private static final int TOB_BLOAT_CHAMBER = 32957;
 
 	/**
 	 * Zone array index offset: (EXTENDED_SCENE_SIZE - SCENE_SIZE) / 2 / 8
@@ -270,8 +272,6 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 
 	private void addToHiddenList(int objectId)
 	{
-		final int TOB_BLOAT_ROOM_PILLAR = 32955;
-		final int TOB_BLOAT_CHAMBER = 32957;
 		//Disallow hiding of bloat room pillar
 		if (objectId == TOB_BLOAT_ROOM_PILLAR || objectId == TOB_BLOAT_CHAMBER) {
 			client.addChatMessage(
