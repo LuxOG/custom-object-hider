@@ -49,6 +49,9 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 {
 	private static final String HIDE_OPTION = "Hide Object";
 	private static final String UNHIDE_OPTION = "Unhide Object";
+	private static final int TILEOBJECT_TYPE_SHIFT = 16;
+	private static final int TILEOBJECT_TYPE_MASK = 0x7;
+	private static final int TILEOBJECT_TYPE_OBJECT = 2;
 
 	private static final List<Integer> BANNED_OBJECTS = List.of(
 		ObjectID.TOB_BLOAT_PILLAR,
@@ -125,6 +128,11 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 	@Override
 	public boolean drawObject(Scene scene, TileObject object)
 	{
+		// Because of gpu black magic must check to see if tile objects are actually scene objects rather than NPCs, players etfc
+		if (!isSceneObjectTag(object))
+		{
+			return true;
+		}
 		if (hiddenObjectIds.contains(object.getId()))
 		{
 			// In reveal mode show them (they're selectable/unhideable); otherwise suppress.
@@ -281,6 +289,12 @@ public class ObjectHiderPlugin extends Plugin implements RenderCallback
 			log.info("ObjectHider: unhiding object id={}", event.getId());
 			removeFromHiddenList(event.getId());
 		}
+	}
+
+	private boolean isSceneObjectTag(TileObject tileObject)
+	{
+		int sceneTagType = (int) (tileObject.getHash() >>> TILEOBJECT_TYPE_SHIFT) & TILEOBJECT_TYPE_MASK;
+		return sceneTagType == TILEOBJECT_TYPE_OBJECT;
 	}
 
 	private void addToHiddenList(int objectId)
